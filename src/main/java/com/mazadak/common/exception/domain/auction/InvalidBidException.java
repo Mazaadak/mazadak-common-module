@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.math.BigDecimal;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
 public class InvalidBidException extends MazadakException {
     public InvalidBidException(String message) {
         super(message, HttpStatus.BAD_REQUEST, "Invalid Bid");
