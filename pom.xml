@@ -92,7 +92,7 @@
         <repository>
             <id>github</id>
             <name>Mazadak Packages</name>
-            <url>https://maven.pkg.github.com/Mazaadak/mazadak-common</url>
+            <url>https://maven.pkg.github.com/Mazaadak/mazadak-common-module</url>
         </repository>
     </distributionManagement>
 
