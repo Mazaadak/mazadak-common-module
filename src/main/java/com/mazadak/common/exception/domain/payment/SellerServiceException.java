@@ -1,22 +1,20 @@
 package com.mazadak.common.exception.domain.payment;
 
+import com.mazadak.common.exception.base.MazadakException;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
-public class SellerServiceException extends RuntimeException {
+public class SellerServiceException extends MazadakException { // TODO: Delete if not needed, Not Used Anywhere
     private final String sellerId;
-    private final int statusCode;
 
-    public SellerServiceException(String message, String sellerId, int statusCode) {
-        super(message);
+    public SellerServiceException(String message, String sellerId, HttpStatus status) {
+        super(message, status, "Seller Service Failure");
         this.sellerId = sellerId;
-        this.statusCode = statusCode;
     }
 
-    public SellerServiceException(String message, String sellerId, int statusCode, Throwable cause) {
-        super(message, cause);
+    public SellerServiceException(String message, String sellerId, HttpStatus status, Throwable cause) {
+        super(message, status, "Seller Service Failure", cause);
         this.sellerId = sellerId;
-        this.statusCode = statusCode;
     }
-
 }

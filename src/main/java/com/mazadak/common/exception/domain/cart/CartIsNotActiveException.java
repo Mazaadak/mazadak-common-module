@@ -1,7 +1,10 @@
 package com.mazadak.common.exception.domain.cart;
 
-public class CartIsNotActiveException extends RuntimeException {
+import com.mazadak.common.exception.base.MazadakException;
+import org.springframework.http.HttpStatus;
+
+public class CartIsNotActiveException extends MazadakException {
     public CartIsNotActiveException(String message) {
-        super(message);
+        super(message, HttpStatus.BAD_REQUEST, "Cart Is Not Active");
     }
 }
