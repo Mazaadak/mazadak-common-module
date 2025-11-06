@@ -1,4 +1,4 @@
-name: Publish Common Module (Maven)
+name: Publish Maven Package
 
 on:
   push:
@@ -8,26 +8,7 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: 'temurin'
-          server-id: github              # matches <id> in pom.xml
-          settings-path: ${{ github.workspace }}
-          cache: 'maven'
-
-      - name: Build & deploy to GitHub Packages
-        run: mvn -B clean deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    uses: Mazaadak/.github/.github/workflows/java-publish-maven-package.yml@main
+    with:
+      java-version: '21'
+      skip-tests: true
