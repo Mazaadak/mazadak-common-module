@@ -44,7 +44,27 @@ In your service’s `pom.xml`, add the **Mazadak GitHub Maven registry**:
 
 ---
 
-### 3. Authenticate (only once per developer)
+### 3. Add `com.mazadak.common` to component scanning
+
+If your Spring Boot application restricts component scanning (for example, by specifying packages in `@ComponentScan` or using a base package in `@SpringBootApplication`), add `com.mazadak.common` so the common module's auto-configured exception handler is detected.
+
+Example (main application class):
+
+```java
+@SpringBootApplication
+@ComponentScan(basePackages = {"com.yourapp", "com.mazadak.common"})
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+```
+
+If you rely on package scanning by convention and your application root package already includes `com.mazadak.common`, no change is necessary.
+
+---
+
+### 4. Authenticate (only once per developer)
 
 GitHub Packages for Maven **requires authentication** — even for public packages.
 
@@ -83,9 +103,10 @@ GitHub Packages for Maven **requires authentication** — even for public packag
      setx GITHUB_USERNAME your-username
      setx GITHUB_TOKEN ghp_xxx
      ```
+
 ---
 
-### 4. Build your service
+### 5. Build your service
 
 In your service repo:
 
