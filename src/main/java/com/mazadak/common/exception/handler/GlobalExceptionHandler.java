@@ -2,6 +2,7 @@ package com.mazadak.common.exception.handler;
 
 
 import com.mazadak.common.exception.base.MazadakException;
+import com.mazadak.common.util.ExceptionUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -10,22 +11,15 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.Instant;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-//@ConditionalOnProperty(
-//        prefix = "mazadak.exception.handler",
-//        name = "enabled",
-//        havingValue = "true",
-//        matchIfMissing = true
-//)
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
     public GlobalExceptionHandler() {
-        log.info("Global Exception Handler Created");
+        log.debug("Global Exception Handler Created");
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -40,7 +34,7 @@ public class GlobalExceptionHandler {
         log.debug("Created ProblemDetail with status: {} and title: {}",
                 problem.getStatus(), problem.getTitle());
 
-        enrich(problem, request);
+        ExceptionUtils.enrichProblemDetail(problem, request);
 
         log.info("Returning RuntimeException response with status: {} for path: {}",
                 problem.getStatus(), request.getRequestURI());
@@ -60,7 +54,7 @@ public class GlobalExceptionHandler {
         log.debug("Created ProblemDetail for MazadakException with status: {} and title: {}",
                 ex.getStatus(), ex.getTitle());
 
-        enrich(problemDetail, request);
+        ExceptionUtils.enrichProblemDetail(problemDetail, request);
 
         log.info("Returning MazadakException response with status: {} for path: {}",
                 ex.getStatus(), request.getRequestURI());
@@ -87,22 +81,12 @@ public class GlobalExceptionHandler {
 
         log.debug("Created ProblemDetail for validation with status: BAD_REQUEST");
 
-        enrich(problemDetail, request);
+        ExceptionUtils.enrichProblemDetail(problemDetail, request);
 
         log.info("Returning validation error response with {} field errors for path: {}",
                 fieldErrors.size(), request.getRequestURI());
 
         return problemDetail;
-    }
-
-    public void enrich(ProblemDetail problemDetail, HttpServletRequest request) {
-        log.debug("Enriching ProblemDetail for request: {} {}", request.getMethod(), request.getRequestURI());
-
-        problemDetail.setProperty("timestamp", Instant.now());
-        problemDetail.setProperty("path", request.getRequestURI());
-        problemDetail.setProperty("method", request.getMethod());
-
-        log.debug("ProblemDetail enriched with timestamp, path, and method");
     }
 }
 
