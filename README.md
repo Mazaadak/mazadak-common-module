@@ -115,17 +115,3 @@ mvn clean package
 ```
 
 ---
-
-
-## Auto-Configuration
-
-The global exception handler (`@RestControllerAdvice`) is **auto-registered** in every service that includes this dependency.
-No need to modify `@ComponentScan` or add imports.
-
-To disable it in a service:
-
-```yaml
-mazadak:
-  exception:
-    enabled: false
-```
