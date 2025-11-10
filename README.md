@@ -15,6 +15,13 @@ Centralized **Exception Handling** for consistent behavior across all services.
 
 ## How to Use in Your Service
 
+> ⚠️ Compatibility note — Java 21 required
+>
+> To avoid runtime and build mismatches, your service must be built and run with JDK 21. Make sure your local dev JDK, CI, Docker images and any runtime environments use Java 21. If your service uses a different Java version you may encounter classfile/module incompatibilities or unexpected runtime errors.
+>
+>
+> Also ensure your Docker base image (if any) and CI runners use JDK 21 (for example `eclipse-temurin:21-jdk`).
+
 ### 1. Add the GitHub Packages repository
 In your service’s `pom.xml`, add the **Mazadak GitHub Maven registry**:
 
