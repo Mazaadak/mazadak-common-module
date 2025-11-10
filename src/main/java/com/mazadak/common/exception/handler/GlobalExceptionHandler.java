@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ProblemDetail handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
+    public ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
         log.warn("Handling MethodArgumentNotValidException at path: {} [{}]",
                 request.getRequestURI(), request.getMethod());
         log.debug("Validation errors count: {}", ex.getBindingResult().getErrorCount());
@@ -91,14 +91,25 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ProblemDetail handleMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
+    public ProblemDetail handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
+        log.warn("Handling HttpRequestMethodNotSupportedException at path: {} [{}]",
+                request.getRequestURI(), request.getMethod());
+        log.debug("Unsupported method: {}, Supported methods: {}", ex.getMethod(), ex.getSupportedMethods());
+
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.METHOD_NOT_ALLOWED,
                 "HTTP method '" + ex.getMethod() + "' is not supported for this endpoint"
         );
         problemDetail.setTitle("Method Not Allowed");
+
+        log.debug("Created ProblemDetail for method not allowed with status: METHOD_NOT_ALLOWED");
+
         ExceptionUtils.enrichProblemDetail(problemDetail, request);
         problemDetail.setProperty("supportedMethods", ex.getSupportedMethods());
+
+        log.info("Returning method not allowed response for path: {} [unsupported method: {}]",
+                request.getRequestURI(), ex.getMethod());
+
         return problemDetail;
     }
 }
