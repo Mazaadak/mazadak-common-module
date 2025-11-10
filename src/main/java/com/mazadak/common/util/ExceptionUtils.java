@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 
 @Slf4j
-@Component
 public class ExceptionUtils {
     public static void enrichProblemDetail(ProblemDetail problemDetail, HttpServletRequest request) {
         log.debug("Enriching ProblemDetail for request: {} {}", request.getMethod(), request.getRequestURI());

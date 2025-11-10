@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,7 +24,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ProblemDetail handleRuntime(RuntimeException ex, HttpServletRequest request) {
+    public ProblemDetail handleRuntimeException(RuntimeException ex, HttpServletRequest request) {
         log.error("Handling RuntimeException: {} at path: {} [{}]",
                 ex.getClass().getSimpleName(), request.getRequestURI(), request.getMethod(), ex);
 
@@ -86,6 +87,18 @@ public class GlobalExceptionHandler {
         log.info("Returning validation error response with {} field errors for path: {}",
                 fieldErrors.size(), request.getRequestURI());
 
+        return problemDetail;
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ProblemDetail handleMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.METHOD_NOT_ALLOWED,
+                "HTTP method '" + ex.getMethod() + "' is not supported for this endpoint"
+        );
+        problemDetail.setTitle("Method Not Allowed");
+        ExceptionUtils.enrichProblemDetail(problemDetail, request);
+        problemDetail.setProperty("supportedMethods", ex.getSupportedMethods());
         return problemDetail;
     }
 }
